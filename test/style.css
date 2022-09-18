@@ -1,0 +1,9 @@
+img {
+    position: absolute;
+    inset: 0;
+
+    margin: auto;
+
+    width: 500px;
+    height: auto;
+}

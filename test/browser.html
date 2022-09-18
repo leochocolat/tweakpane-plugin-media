@@ -3,22 +3,32 @@
 <head>
 	<meta charset="UTF-8">
 	<title></title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
+	<img src="https://images.unsplash.com/photo-1663326224028-27ba787bb7ce?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2148&q=80" alt="">
+
 	<script src="../node_modules/tweakpane/dist/tweakpane.js"></script>
-	<script src="../dist/tweakpane-plugin-template.js"></script>
+	<script src="../dist/tweakpane-plugin-media.js"></script>
 	<script>
-		const params = {
-			prop: 3,
-		};
+		const image = document.querySelector('img');
+		console.log(image.tagName !== 'IMG');
+
 		const pane = new Tweakpane.Pane();
 
 		// Register plugin
-		pane.registerPlugin(TweakpaneTemplatePlugin);
+		pane.registerPlugin(TweakpaneMediaPlugin);
+
+		const PARAMS = {
+			image,
+		}
 
 		// TODO: Update parameters for your plugin
-		pane.addInput(params, 'prop', {
-			view: 'dots',
+		pane.addInput(PARAMS, 'image', {
+			label: 'Image',
+			view: 'media',
+			height: 50,
+			objectFit: 'contain',
 		}).on('change', (ev) => {
 			console.log(ev.value);
 		});

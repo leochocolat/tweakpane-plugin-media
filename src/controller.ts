@@ -1,61 +1,71 @@
-import {
-	constrainRange,
-	Controller,
-	PointerHandler,
-	PointerHandlerEvent,
-	Value,
-	ViewProps,
-} from '@tweakpane/core';
+import {Controller, Value, ViewProps} from '@tweakpane/core';
 
+import {PluginMediaInputParams} from './plugin';
 import {PluginView} from './view';
 
 interface Config {
-	value: Value<number>;
+	value: Value<HTMLImageElement>;
 	viewProps: ViewProps;
+	params: PluginMediaInputParams;
 }
 
 // Custom controller class should implement `Controller` interface
 export class PluginController implements Controller<PluginView> {
-	public readonly value: Value<number>;
+	public readonly value: Value<HTMLImageElement>;
 	public readonly view: PluginView;
 	public readonly viewProps: ViewProps;
+	public readonly params: PluginMediaInputParams;
 
 	constructor(doc: Document, config: Config) {
-		this.onPoint_ = this.onPoint_.bind(this);
-
 		// Receive the bound value from the plugin
 		this.value = config.value;
+		this.params = config.params;
 
 		// and also view props
 		this.viewProps = config.viewProps;
 		this.viewProps.handleDispose(() => {
-			// Called when the controller is disposing
-			console.log('TODO: dispose controller');
+			this.removeEventListeners_();
 		});
 
 		// Create a custom view
 		this.view = new PluginView(doc, {
 			value: this.value,
 			viewProps: this.viewProps,
+			params: this.params,
 		});
 
-		// You can use `PointerHandler` to handle pointer events in the same way as Tweakpane do
-		const ptHandler = new PointerHandler(this.view.element);
-		ptHandler.emitter.on('down', this.onPoint_);
-		ptHandler.emitter.on('move', this.onPoint_);
-		ptHandler.emitter.on('up', this.onPoint_);
+		// Bind
+		this.bindAll_();
+
+		// Events
+		this.setupEventListeners_();
 	}
 
-	private onPoint_(ev: PointerHandlerEvent) {
-		const data = ev.data;
-		if (!data.point) {
-			return;
-		}
+	private bindAll_(): void {
+		this.inputHandler_ = this.inputHandler_.bind(this);
+	}
 
-		// Update the value by user input
-		const dx =
-			constrainRange(data.point.x / data.bounds.width + 0.05, 0, 1) * 10;
-		const dy = data.point.y / 10;
-		this.value.rawValue = Math.floor(dy) * 10 + dx;
+	private setupEventListeners_(): void {
+		this.view.input.addEventListener('input', this.inputHandler_);
+	}
+
+	private removeEventListeners_(): void {
+		this.view.input.removeEventListener('input', this.inputHandler_);
+	}
+
+	private inputHandler_(): void {
+		const file = this.view.input.files ? this.view.input.files[0] : null;
+
+		if (!file) return;
+
+		const image = new Image();
+		image.src = URL.createObjectURL(file);
+
+		const loadHandler = () => {
+			image.removeEventListener('load', loadHandler);
+			this.value.rawValue = image;
+		};
+
+		image.addEventListener('load', loadHandler);
 	}
 }

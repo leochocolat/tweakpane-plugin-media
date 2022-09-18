@@ -1,8 +1,8 @@
 {
-  "name": "tweakpane-plugin-template",
+  "name": "tweakpane-plugin-media",
   "version": "0.0.0",
-  "description": "Plugin template for Tweakpane",
-  "main": "dist/tweakpane-plugin-template.js",
+  "description": "Plugin Media for Tweakpane",
+  "main": "dist/tweakpane-plugin-media.js",
   "types": "dist/types/index.d.ts",
   "author": "cocopon",
   "license": "MIT",
