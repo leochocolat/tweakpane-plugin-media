@@ -4,38 +4,84 @@
 // Additional style for the plugin
 .#{$prefix}-tmpv {
 	// Extend a general input view style
-	@extend %input;
+	// @extend %input;
 
-	cursor: pointer;
-	display: grid;
-	grid-template-columns: repeat(10, 1fr);
-	grid-template-rows: repeat(auto-fit, 10px);
-	height: calc(var(--bld-us) * 3);
+	display: flex;
+	flex-direction: column;
 	overflow: hidden;
 	position: relative;
+	background-color: var(--bs-bg);
 
 	&.#{$prefix}-v-disabled {
 		opacity: 0.5;
 	}
 
-	&_text {
+	&_label {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		right: 0;
+
+		margin: auto;
+
+		text-align: center;
+
+		width: 100%;
+		pointer-events: none;
+
 		// You can use CSS variables for styling. See declarations for details:
 		// ../../node_modules/@tweakpane/core/lib/sass/common/_defs.scss
 		color: var(--in-fg);
 
-		bottom: 2px;
 		font-size: 0.9em;
 		line-height: 0.9;
 		opacity: 0.5;
+	}
+
+	&_container {		
+		position: relative;
+		background-color: var(--in-bg);
+		border-radius: var(--elm-br);
+		overflow: hidden;
+	}
+
+	&_head {
+		display: none;
+		align-items: center;
+		width: 100%;
+		height: 2em;
+		margin-bottom: 4px;
+		background-color: var(--in-bg-a);
+		border-radius: var(--elm-br);
+		white-space: nowrap;
+	}
+
+	&_monitor {
+		font-size: 0.9em;
+		line-height: 0.9;
+		opacity: 0.5;
+		padding-left: 4px;
+	}
+
+	&_input {
 		position: absolute;
-		right: 2px;
+		left: 0;
+		top: 0;
+
+		width: 100%;
+		height: 100%;
+
+		opacity: 0;
+		padding: 0;
+		cursor: pointer;
 	}
 
 	input::-webkit-file-upload-button {
 		display: none;
-	}
-
-	label {
-
 	}
 }
