@@ -32,6 +32,9 @@ export class PluginView implements View {
 		// Receive the bound value from the controller
 		this.value_ = config.value;
 
+		// Init id for monitor
+		this.value_.rawValue.id = this.value_.rawValue.src;
+
 		// Extensions
 		this.extensions_ = this.params_.extensions || '.jpg, .jpeg, .png, .webp';
 

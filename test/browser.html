@@ -29,8 +29,8 @@
 		pane.addInput(PARAMS, 'image', {
 			label: 'Image',
 			view: 'image',
-			height: 80,
-			objectFit: 'contain',
+			height: 100,
+			objectFit: 'cover',
 			showMonitor: true,
 		}).on('change', (ev) => {
 			console.log(ev.value);
@@ -40,7 +40,7 @@
 			label: 'Video',
 			view: 'video',
 			height: 100,
-			objectFit: 'contain',
+			objectFit: 'cover',
 			showMonitor: true,
 		}).on('change', (ev) => {
 			console.log(ev.value);
