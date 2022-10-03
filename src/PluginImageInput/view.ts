@@ -107,15 +107,14 @@ export class PluginView implements View {
 		const element = doc.createElement('div');
 		element.classList.add(className());
 		element.style.position = 'relative';
-		if (this.params_.height) element.style.height = `${this.params_.height}px`;
+		element.style.height = `${this.params_.height || 100}px`;
 		return element;
 	}
 
 	private createContainer_(doc: Document): HTMLElement {
 		const container = doc.createElement('div');
 		container.classList.add(className('container'));
-		if (this.params_.height)
-			container.style.height = `${this.params_.height}px`;
+		container.style.height = `${this.params_.height || 100}px`;
 		return container;
 	}
 

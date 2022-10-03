@@ -21,18 +21,32 @@ pane.registerPlugin(TweakpanePluginMedia);
 
 ## Usage
 
-```js
-const params = {
-	image: document.querySelector('img'),
-};
+### Image
 
-pane
-	.addInput(params, 'image', {
-		view: 'media',
-	})
-	.on('change', (ev) => {
-		console.log(ev.value);
-	});
+```js
+pane.addInput(PARAMS, 'image', {
+	label: 'Image',
+	view: 'image',
+	height: 80, // Optional (Default to 100)
+	objectFit: 'contain', // Optional (Default to cover)
+	showMonitor: true, // Optional (Default to false)
+}).on('change', (ev) => {
+	console.log(ev.value);
+});
+```
+
+### Video
+
+```js
+pane.addInput(PARAMS, 'video', {
+	label: 'Video',
+	view: 'video',
+	height: 110, // Optional (Default to 100)
+	objectFit: 'contain', // Optional (Default to cover)
+	showMonitor: true, // Optional (Default to false)
+}).on('change', (ev) => {
+	console.log(ev.value);
+});
 ```
 
 ## Todo
