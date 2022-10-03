@@ -37,8 +37,5 @@ pane
 
 ## Todo
 
-- Video
 - Better styling
-- Monitor showing filename (make it an option)
-- Canvas / FBO
 - Three.js texture
