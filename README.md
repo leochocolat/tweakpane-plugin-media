@@ -1,6 +1,6 @@
 # Tweakpane media plugin
 
-Plugin for image and video inputs for [Tweakpane][tweakpane].
+Plugin for image and video inputs for [Tweakpane](tweakpane).
 
 # For plugin users
 
