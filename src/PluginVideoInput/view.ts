@@ -36,7 +36,8 @@ export class PluginView implements View {
 		this.value_.rawValue.id = this.value_.rawValue.src;
 
 		// Extensions
-		this.extensions_ = this.params_.extensions || '.jpg, .jpeg, .png, .webp';
+		this.extensions_ =
+			this.params_.extensions || '.mp4, .mov, .mpeg, .ogg, .webm, .mkv, .avi';
 
 		// Create a root element for the plugin
 		this.element = this.createElement_(doc);
