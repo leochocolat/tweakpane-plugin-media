@@ -148,7 +148,7 @@ export class PluginView implements View {
 		const label = doc.createElement('label');
 		label.setAttribute('for', 'image');
 		label.classList.add(className('label'));
-		label.innerHTML = '<span>Import image</span>';
+		label.innerHTML = '<span>Import video</span>';
 		return label;
 	}
 
