@@ -8,7 +8,7 @@ Plugin for image and video inputs for [Tweakpane](tweakpane).
 
 ```bash
 npm install tweakpane
-npm install github:leochocolat/tweakpane-plugin-media
+npm i tweakpane-plugin-media
 ```
 
 ```js
