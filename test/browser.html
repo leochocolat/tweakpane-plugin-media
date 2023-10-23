@@ -3,31 +3,32 @@
 <head>
 	<meta charset="UTF-8">
 	<title></title>
-	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-	<div class="container">
-		<video loop autoplay muted playsinline src="./video.mp4"></video>
-		<img src="./image.png" alt="">
-	</div>
+<div class="container">
+	<video loop autoplay muted playsinline src="./video.mp4"></video>
+	<img src="./image.png" alt="">
+</div>
 
-	<script src="../node_modules/tweakpane/dist/tweakpane.js"></script>
-	<script src="../dist/tweakpane-plugin-media.js"></script>
-	<script>
+	<script type="module">
+		import {Pane} from '../node_modules/tweakpane/dist/tweakpane.min.js';
+		import * as TweakpaneMediaPlugin from '../dist/tweakpane-plugin-media.js';
+
 		const image = document.querySelector('img');
 		const video = document.querySelector('video');
-
-		const pane = new Tweakpane.Pane();
-
-		// Register plugin
-		pane.registerPlugin(TweakpaneMediaPlugin);
 
 		const PARAMS = {
 			image,
 			video,
 		}
 
-		pane.addInput(PARAMS, 'image', {
+		const pane = new Pane();
+		// Register plugin
+		pane.registerPlugin(TweakpaneMediaPlugin);
+
+
+		// TODO: Update parameters for your plugin
+		pane.addBinding(PARAMS, 'image', {
 			label: 'Image',
 			view: 'image',
 			height: 100,
@@ -37,7 +38,7 @@
 			console.log(ev.value);
 		});
 
-		pane.addInput(PARAMS, 'video', {
+		pane.addBinding(PARAMS, 'video', {
 			label: 'Video',
 			view: 'video',
 			height: 100,

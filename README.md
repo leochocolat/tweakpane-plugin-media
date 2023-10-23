@@ -24,7 +24,7 @@ pane.registerPlugin(TweakpanePluginMedia);
 ### Image
 
 ```js
-pane.addInput(PARAMS, 'image', {
+pane.addBinding(PARAMS, 'image', {
 	label: 'Image',
 	view: 'image',
 	height: 80, // Preview block height in px - Optional (Default to 100)
@@ -39,7 +39,7 @@ pane.addInput(PARAMS, 'image', {
 ### Video
 
 ```js
-pane.addInput(PARAMS, 'video', {
+pane.addBinding(PARAMS, 'video', {
 	label: 'Video',
 	view: 'video',
 	height: 110, // Preview block height in px - Optional (Default to 100)

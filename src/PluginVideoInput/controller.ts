@@ -1,7 +1,7 @@
 import {Controller, Value, ViewProps} from '@tweakpane/core';
 
-import {PluginVideoInputParams} from './index';
-import {PluginView} from './view';
+import {PluginVideoInputParams} from './plugin.js';
+import {PluginView} from './view.js';
 
 interface Config {
 	value: Value<HTMLVideoElement>;

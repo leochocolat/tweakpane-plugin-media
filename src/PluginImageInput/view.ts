@@ -1,6 +1,6 @@
 import {ClassName, Value, View, ViewProps} from '@tweakpane/core';
 
-import {PluginImageInputParams} from './index';
+import {PluginImageInputParams} from './plugin.js';
 
 interface Config {
 	value: Value<HTMLImageElement>;
