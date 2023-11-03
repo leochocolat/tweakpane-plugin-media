@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "description": "Plugin Media for Tweakpane",
   "main": "dist/tweakpane-plugin-media.js",
+  "module": "dist/tweakpane-plugin-media.min.js",
   "type": "module",
   "types": "dist/types/index.d.ts",
   "author": "cocopon",
