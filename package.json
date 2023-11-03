@@ -1,8 +1,8 @@
 {
-  "name": "tweakpane-plugin-media4.0.1",
+  "name": "tweakpane-plugin-media",
   "version": "0.0.0",
   "description": "Plugin Media for Tweakpane",
-  "main": "dist/tweakpane-plugin-media4.0.1.js",
+  "main": "dist/tweakpane-plugin-media.js",
   "type": "module",
   "types": "dist/types/index.d.ts",
   "author": "cocopon",
