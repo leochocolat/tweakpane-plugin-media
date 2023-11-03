@@ -1,5 +1,5 @@
 /.vscode/
-/dist/
+#/dist/
 /*.zip
 
 ### https://raw.github.com/github/gitignore//Node.gitignore
@@ -88,7 +88,7 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
+#dist
 
 # Gatsby files
 .cache/
