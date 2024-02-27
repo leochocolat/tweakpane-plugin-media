@@ -2,53 +2,15 @@
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
-	<title></title>
+	<title>Demo Tweakpane Plugin Media</title>
+	<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-	<video loop autoplay muted playsinline src="./video.mp4"></video>
-	<img src="./image.png" alt="">
-</div>
+	<div class="container">
+		<video loop autoplay muted playsinline src="./video.mp4"></video>
+		<img src="./image.png" alt="">
+	</div>
 
-	<script type="module">
-		import {Pane} from '../node_modules/tweakpane/dist/tweakpane.min.js';
-		import * as TweakpaneMediaPlugin from '../dist/tweakpane-plugin-media.js';
-
-		const image = document.querySelector('img');
-		const video = document.querySelector('video');
-
-		const PARAMS = {
-			image,
-			video,
-		}
-
-		const pane = new Pane();
-		// Register plugin
-		pane.registerPlugin(TweakpaneMediaPlugin);
-
-
-		// TODO: Update parameters for your plugin
-		pane.addBinding(PARAMS, 'image', {
-			label: 'Image',
-			view: 'image',
-			height: 100,
-			objectFit: 'cover',
-			showMonitor: true,
-		}).on('change', (ev) => {
-			console.log(ev.value);
-		});
-
-		pane.addBinding(PARAMS, 'video', {
-			label: 'Video',
-			view: 'video',
-			height: 100,
-			objectFit: 'cover',
-			showMonitor: true,
-		}).on('change', (ev) => {
-			console.log(ev.value);
-		});
-
-		window.pane = pane;
-	</script>
+	<script type="module" src="./script.js"></script>
 </body>
 </html>
