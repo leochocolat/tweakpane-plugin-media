@@ -2,6 +2,8 @@
 
 Plugin for image and video inputs for [Tweakpane](https://tweakpane.github.io/docs/).
 
+![](https://leochocolat.github.io/tweakpane-plugin-media/test/demo.png)
+
 # For plugin users
 
 ## Installation
