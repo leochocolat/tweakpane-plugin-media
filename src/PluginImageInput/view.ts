@@ -159,6 +159,7 @@ export class PluginView implements View {
 		image.style.width = '100%';
 		image.style.height = '100%';
 		image.style.objectFit = this.params_.objectFit || 'cover';
+		image.setAttribute('crossorigin', '*');
 		return image;
 	}
 
