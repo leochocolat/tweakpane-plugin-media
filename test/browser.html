@@ -10,7 +10,14 @@
 		<video loop autoplay muted playsinline src="./video.mp4"></video>
 		<img src="./image.png" alt="">
 	</div>
-
+	<script type="importmap">
+		{
+		  "imports": {
+			"three": "https://unpkg.com/three@0.151.3/build/three.module.js",
+			"three/addons/": "https://unpkg.com/three@0.151.3/examples/jsm/"
+		  }
+		}
+	  </script>
 	<script type="module" src="./script.js"></script>
 </body>
 </html>

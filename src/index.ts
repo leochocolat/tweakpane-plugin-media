@@ -1,5 +1,6 @@
-import {PluginImageInput} from "./PluginImageInput/plugin.js";
-import {PluginVideoInput} from "./PluginVideoInput/plugin.js";
+import { PluginImageInput } from "./PluginImageInput/plugin.js";
+import { PluginTextureInput } from "./PluginTextureInput/plugin.js";
+import { PluginVideoInput } from "./PluginVideoInput/plugin.js";
 
 // The identifier of the plugin bundle.
 export const id = 'media';
@@ -9,4 +10,4 @@ export const id = 'media';
 export const css = '__css__';
 
 // Export your plugin(s) as a constant `plugins`
-export const plugins = [PluginImageInput, PluginVideoInput];
+export const plugins = [PluginImageInput, PluginTextureInput, PluginVideoInput];

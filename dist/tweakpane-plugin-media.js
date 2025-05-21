@@ -1390,7 +1390,7 @@ class Semver {
     }
 }
 
-const VERSION = new Semver('2.0.3');
+const VERSION = new Semver('2.0.5');
 
 function createPlugin(plugin) {
     return Object.assign({ core: VERSION }, plugin);
@@ -4072,7 +4072,7 @@ function parseHexRgbColor(text) {
     return comps ? new IntColor(comps, 'rgb') : null;
 }
 function parseHexRgbaColorComponents(text) {
-    const mRgb = text.match(/^#?([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
+    const mRgb = text.match(/^#([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
     if (mRgb) {
         return [
             parseInt(mRgb[1] + mRgb[1], 16),
@@ -6747,9 +6747,9 @@ createPlugin({
 
 // Create a class name generator from the view name
 // ClassName('tmp') will generate a CSS class name like `tp-tmpv`
-const className$1 = ClassName('tmp');
+const className$2 = ClassName('tmp');
 // Custom view class should implement `View` interface
-class PluginView$1 {
+class PluginView$2 {
     constructor(doc, config) {
         // Params
         this.params_ = config.params;
@@ -6811,33 +6811,33 @@ class PluginView$1 {
     }
     createElement_(doc) {
         const element = doc.createElement('div');
-        element.classList.add(className$1());
+        element.classList.add(className$2());
         element.style.position = 'relative';
         element.style.height = `${this.params_.height || 100}px`;
         return element;
     }
     createContainer_(doc) {
         const container = doc.createElement('div');
-        container.classList.add(className$1('container'));
+        container.classList.add(className$2('container'));
         container.style.height = `${this.params_.height || 100}px`;
         return container;
     }
     createHead_(doc) {
         const head = doc.createElement('div');
-        head.classList.add(className$1('head'));
+        head.classList.add(className$2('head'));
         if (this.value_.rawValue.id && this.params_.showMonitor)
             head.style.display = 'flex';
         return head;
     }
     createMonitor_(doc) {
         const monitor = doc.createElement('div');
-        monitor.classList.add(className$1('monitor'));
+        monitor.classList.add(className$2('monitor'));
         monitor.innerHTML = this.value_.rawValue.id;
         return monitor;
     }
     createInput_(doc) {
         const input = doc.createElement('input');
-        input.classList.add(className$1('input'));
+        input.classList.add(className$2('input'));
         input.setAttribute('id', 'image');
         input.setAttribute('type', 'file');
         input.setAttribute('accept', this.extensions_);
@@ -6846,7 +6846,7 @@ class PluginView$1 {
     createLabel_(doc) {
         const label = doc.createElement('label');
         label.setAttribute('for', 'image');
-        label.classList.add(className$1('label'));
+        label.classList.add(className$2('label'));
         label.innerHTML = '<span>Import image</span>';
         return label;
     }
@@ -6909,7 +6909,7 @@ class PluginView$1 {
 }
 
 // Custom controller class should implement `Controller` interface
-class PluginController$1 {
+class PluginController$2 {
     constructor(doc, config) {
         // Receive the bound value from the plugin
         this.value = config.value;
@@ -6920,7 +6920,7 @@ class PluginController$1 {
             this.removeEventListeners_();
         });
         // Create a custom view
-        this.view = new PluginView$1(doc, {
+        this.view = new PluginView$2(doc, {
             value: this.value,
             viewProps: this.viewProps,
             params: this.params,
@@ -7000,6 +7000,310 @@ const PluginImageInput = createPlugin({
             return (target, inValue) => {
                 // Use `target.write()` to write the primitive value to the target,
                 // or `target.writeProperty()` to write a property of the target
+                target.write(inValue);
+            };
+        },
+    },
+    controller(args) {
+        // Create a controller for the plugin
+        return new PluginController$2(args.document, {
+            value: args.value,
+            viewProps: args.viewProps,
+            params: args.params,
+        });
+    },
+});
+
+// Create a class name generator from the view name
+// ClassName('tpt') will generate a CSS class name like `tp-tptv` (texture plugin texture view)
+const className$1 = ClassName('tmp');
+// Custom view class should implement `View` interface
+class PluginView$1 {
+    constructor(doc, config) {
+        // Params
+        this.params_ = config.params;
+        // Receive the bound value from the controller
+        this.value_ = config.value;
+        this.texture = this.value_.rawValue;
+        // Set default name for monitor if missing
+        if (this.value_.rawValue && !this.value_.rawValue.name) {
+            this.value_.rawValue.name = 'texture';
+        }
+        // Extensions
+        this.extensions_ = this.params_.extensions || '.jpg, .jpeg, .png, .webp, .avif';
+        // Create a root element for the plugin
+        this.element = this.createElement_(doc);
+        // Bind view props to the element
+        config.viewProps.bindClassModifiers(this.element);
+        // Header
+        this.head_ = this.createHead_(doc);
+        this.element.appendChild(this.head_);
+        this.monitor_ = this.createMonitor_(doc);
+        this.head_.appendChild(this.monitor_);
+        // Container
+        this.container_ = this.createContainer_(doc);
+        this.element.appendChild(this.container_);
+        // Input
+        this.input = this.createInput_(doc);
+        this.container_.appendChild(this.input);
+        // Label
+        this.label_ = this.createLabel_(doc);
+        this.container_.appendChild(this.label_);
+        // Image
+        this.image_ = this.createImage_();
+        this.container_.appendChild(this.image_);
+        // Bind
+        this.bindAll_();
+        // Events
+        this.setupEventListeners_();
+        // Setup texture loading event if the texture exists but isn't loaded yet
+        this.setupTextureEvents_();
+        // Apply the initial value
+        this.refresh_();
+        // Dispose
+        config.viewProps.handleDispose(() => {
+            this.removeEventListeners_();
+        });
+    }
+    refresh() {
+        this.refresh_();
+    }
+    refresh_() {
+        var _a;
+        const texture = this.value_.rawValue;
+        if (texture.image) {
+            // For HTMLImageElement
+            if (texture.image instanceof HTMLImageElement && texture.image.complete) {
+                this.image_.setAttribute('src', texture.image.src);
+                this.image_.style.opacity = '1';
+                this.label_.style.opacity = '0';
+            }
+        }
+        // Apply texture name to monitor
+        this.monitor_.innerHTML = ((_a = this.value_.rawValue.image) === null || _a === void 0 ? void 0 : _a.id) || '';
+        // Display monitor
+        if (this.value_.rawValue.id && this.params_.showMonitor) {
+            this.head_.style.display = 'flex';
+        }
+    }
+    createElement_(doc) {
+        const element = doc.createElement('div');
+        element.classList.add(className$1());
+        element.style.position = 'relative';
+        element.style.height = `${this.params_.height || 100}px`;
+        return element;
+    }
+    createContainer_(doc) {
+        const container = doc.createElement('div');
+        container.classList.add(className$1('container'));
+        container.style.height = `${this.params_.height || 100}px`;
+        return container;
+    }
+    createHead_(doc) {
+        const head = doc.createElement('div');
+        head.classList.add(className$1('head'));
+        if (this.value_.rawValue.id && this.params_.showMonitor)
+            head.style.display = 'flex';
+        return head;
+    }
+    createMonitor_(doc) {
+        const monitor = doc.createElement('div');
+        monitor.classList.add(className$1('monitor'));
+        return monitor;
+    }
+    createInput_(doc) {
+        const input = doc.createElement('input');
+        input.classList.add(className$1('input'));
+        input.setAttribute('id', 'image');
+        input.setAttribute('type', 'file');
+        input.setAttribute('accept', this.extensions_);
+        return input;
+    }
+    createLabel_(doc) {
+        const label = doc.createElement('label');
+        label.setAttribute('for', 'texture');
+        label.classList.add(className$1('label'));
+        label.innerHTML = '<span>Import texture</span>';
+        return label;
+    }
+    createImage_() {
+        const image = new Image();
+        image.style.position = 'absolute';
+        image.style.pointerEvents = 'none';
+        image.style.left = '0';
+        image.style.top = '0';
+        image.style.width = '100%';
+        image.style.height = '100%';
+        image.style.objectFit = this.params_.objectFit || 'cover';
+        image.setAttribute('crossorigin', '*');
+        return image;
+    }
+    bindAll_() {
+        this.valueChangedHandler_ = this.valueChangedHandler_.bind(this);
+        this.dragenterHandler_ = this.dragenterHandler_.bind(this);
+        this.dragleaveHandler_ = this.dragleaveHandler_.bind(this);
+        this.mouseenterHandler_ = this.mouseenterHandler_.bind(this);
+        this.mouseleaveHandler_ = this.mouseleaveHandler_.bind(this);
+    }
+    setupTextureEvents_() {
+        const texture = this.value_.rawValue;
+        if (!texture)
+            return;
+        this.watchTextureImage(texture);
+    }
+    valueChangedHandler_() {
+        console.log('value changed');
+        this.refresh_();
+    }
+    setupEventListeners_() {
+        this.value_.emitter.on('change', this.valueChangedHandler_);
+        this.input.addEventListener('dragenter', this.dragenterHandler_);
+        this.input.addEventListener('dragleave', this.dragleaveHandler_);
+        this.input.addEventListener('mouseenter', this.mouseenterHandler_);
+        this.input.addEventListener('mouseleave', this.mouseleaveHandler_);
+    }
+    watchTextureImage(texture) {
+        const intervalId = setInterval(() => {
+            if (texture.image) {
+                this.refresh_();
+                if (texture.needsUpdate !== undefined) {
+                    texture.needsUpdate = true;
+                }
+                clearInterval(intervalId);
+            }
+        }, 100);
+    }
+    removeEventListeners_() {
+        this.value_.emitter.off('change', this.valueChangedHandler_);
+        this.input.removeEventListener('dragenter', this.dragenterHandler_);
+        this.input.removeEventListener('dragleave', this.dragleaveHandler_);
+        this.input.removeEventListener('mouseenter', this.mouseenterHandler_);
+        this.input.removeEventListener('mouseleave', this.mouseleaveHandler_);
+    }
+    dragenterHandler_(event) {
+        if (event.dataTransfer &&
+            event.dataTransfer.items[0] &&
+            event.dataTransfer.items[0].type.includes('image')) {
+            this.image_.style.opacity = '0';
+            this.label_.style.opacity = '1';
+        }
+    }
+    dragleaveHandler_() {
+        if (this.value_.rawValue && this.value_.rawValue.image) {
+            this.image_.style.opacity = '1';
+            this.label_.style.opacity = '0';
+        }
+    }
+    mouseenterHandler_() {
+        this.container_.style.opacity = '0.5';
+    }
+    mouseleaveHandler_() {
+        this.container_.style.opacity = '1';
+    }
+}
+
+// Custom controller class should implement `Controller` interface
+class PluginController$1 {
+    constructor(doc, config) {
+        // Receive the bound value from the plugin
+        this.value = config.value;
+        this.params = config.params;
+        // and also view props
+        this.viewProps = config.viewProps;
+        this.viewProps.handleDispose(() => {
+            this.removeEventListeners_();
+        });
+        // Create a custom view
+        this.view = new PluginView$1(doc, {
+            value: this.value,
+            viewProps: this.viewProps,
+            params: this.params,
+        });
+        // Bind
+        this.bindAll_();
+        // Events
+        this.setupEventListeners_();
+    }
+    bindAll_() {
+        this.inputHandler_ = this.inputHandler_.bind(this);
+    }
+    setupEventListeners_() {
+        this.view.input.addEventListener('input', this.inputHandler_);
+    }
+    removeEventListeners_() {
+        this.view.input.removeEventListener('input', this.inputHandler_);
+    }
+    inputHandler_() {
+        const file = this.view.input.files ? this.view.input.files[0] : null;
+        if (!file)
+            return;
+        const image = new Image();
+        image.src = URL.createObjectURL(file);
+        image.id = file.name;
+        const loadHandler = () => {
+            image.removeEventListener('load', loadHandler);
+            this.view.texture.image = image;
+            this.view.texture.needsUpdate = true;
+            this.view.refresh();
+        };
+        image.addEventListener('load', loadHandler);
+    }
+}
+
+// `InputBindingPlugin<In, Ex, P>` means...
+// - The plugin receives the bound value as `Ex`,
+// - converts `Ex` into `In` and holds it
+// - P is the type of the parsed parameters
+//
+const PluginTextureInput = createPlugin({
+    id: 'texture-input',
+    type: 'input',
+    accept(exValue, params) {
+        const result = parseRecord(params, (p) => ({
+            extensions: p.optional.string,
+            objectFit: p.optional.string,
+            height: p.optional.number,
+            showMonitor: p.optional.boolean,
+            label: p.required.string,
+            view: p.required.constant('texture'),
+        }));
+        if (!result) {
+            return null;
+        }
+        if (exValue instanceof Object) {
+            return {
+                initialValue: exValue,
+                params: result,
+            };
+        }
+        try {
+            const possibleTexture = exValue;
+            const isTextureObject = possibleTexture &&
+                (possibleTexture.isTexture === true ||
+                    typeof possibleTexture.image !== 'undefined' ||
+                    typeof possibleTexture.dispose === 'function');
+            if (isTextureObject) {
+                return {
+                    initialValue: possibleTexture,
+                    params: result,
+                };
+            }
+        }
+        catch (e) {
+        }
+        return null;
+    },
+    binding: {
+        reader(_args) {
+            return (exValue) => {
+                return exValue instanceof Object
+                    ? exValue
+                    : {};
+            };
+        },
+        writer(_args) {
+            return (target, inValue) => {
+                // Use `target.write()` to write the value to the target
                 target.write(inValue);
             };
         },
@@ -7299,6 +7603,6 @@ const id = 'media';
 // See rollup.config.js for details
 const css = '.tp-tmpv{display:flex;flex-direction:column;overflow:hidden;position:relative;background-color:var(--bs-bg)}.tp-tmpv.tp-v-disabled{opacity:.5}.tp-tmpv_label{display:flex;justify-content:center;align-items:center;position:absolute;left:0;top:0;bottom:0;right:0;margin:auto;text-align:center;width:100%;pointer-events:none;color:var(--in-fg);font-size:.9em;line-height:.9;opacity:.5}.tp-tmpv_container{position:relative;background-color:var(--in-bg);border-radius:var(--elm-br);overflow:hidden}.tp-tmpv_head{display:none;align-items:center;width:100%;height:2em;margin-bottom:4px;background-color:var(--in-bg-a);border-radius:var(--elm-br);white-space:nowrap}.tp-tmpv_monitor{margin-top:1px;font-size:.9em;line-height:.9;opacity:.5;padding-left:4px;color:var(--in-fg)}.tp-tmpv_input{position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;padding:0;cursor:pointer}.tp-tmpv input::-webkit-file-upload-button{display:none}';
 // Export your plugin(s) as a constant `plugins`
-const plugins = [PluginImageInput, PluginVideoInput];
+const plugins = [PluginImageInput, PluginTextureInput, PluginVideoInput];
 
 export { css, id, plugins };
