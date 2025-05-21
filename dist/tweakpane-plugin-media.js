@@ -1390,7 +1390,7 @@ class Semver {
     }
 }
 
-const VERSION = new Semver('2.0.5');
+const VERSION = new Semver('2.0.3');
 
 function createPlugin(plugin) {
     return Object.assign({ core: VERSION }, plugin);
@@ -4072,7 +4072,7 @@ function parseHexRgbColor(text) {
     return comps ? new IntColor(comps, 'rgb') : null;
 }
 function parseHexRgbaColorComponents(text) {
-    const mRgb = text.match(/^#([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
+    const mRgb = text.match(/^#?([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
     if (mRgb) {
         return [
             parseInt(mRgb[1] + mRgb[1], 16),
@@ -7024,11 +7024,8 @@ class PluginView$1 {
         this.params_ = config.params;
         // Receive the bound value from the controller
         this.value_ = config.value;
+        // Expose texture
         this.texture = this.value_.rawValue;
-        // Set default name for monitor if missing
-        if (this.value_.rawValue && !this.value_.rawValue.name) {
-            this.value_.rawValue.name = 'texture';
-        }
         // Extensions
         this.extensions_ = this.params_.extensions || '.jpg, .jpeg, .png, .webp, .avif';
         // Create a root element for the plugin
@@ -7065,19 +7062,16 @@ class PluginView$1 {
             this.removeEventListeners_();
         });
     }
-    refresh() {
-        this.refresh_();
-    }
     refresh_() {
         var _a;
         const texture = this.value_.rawValue;
-        if (texture.image) {
-            // For HTMLImageElement
-            if (texture.image instanceof HTMLImageElement && texture.image.complete) {
-                this.image_.setAttribute('src', texture.image.src);
-                this.image_.style.opacity = '1';
-                this.label_.style.opacity = '0';
-            }
+        if (texture.image && texture.image instanceof HTMLImageElement && texture.image.complete) {
+            this.image_.setAttribute('src', texture.image.src);
+            this.image_.style.opacity = '1';
+            this.label_.style.opacity = '0';
+        }
+        else {
+            this.label_.style.opacity = '1';
         }
         // Apply texture name to monitor
         this.monitor_.innerHTML = ((_a = this.value_.rawValue.image) === null || _a === void 0 ? void 0 : _a.id) || '';
@@ -7149,10 +7143,9 @@ class PluginView$1 {
         const texture = this.value_.rawValue;
         if (!texture)
             return;
-        this.watchTextureImage(texture);
+        this.watchTextureImage_(texture);
     }
     valueChangedHandler_() {
-        console.log('value changed');
         this.refresh_();
     }
     setupEventListeners_() {
@@ -7162,15 +7155,14 @@ class PluginView$1 {
         this.input.addEventListener('mouseenter', this.mouseenterHandler_);
         this.input.addEventListener('mouseleave', this.mouseleaveHandler_);
     }
-    watchTextureImage(texture) {
+    watchTextureImage_(texture) {
         const intervalId = setInterval(() => {
-            if (texture.image) {
-                this.refresh_();
-                if (texture.needsUpdate !== undefined) {
-                    texture.needsUpdate = true;
-                }
-                clearInterval(intervalId);
-            }
+            if (!texture.image)
+                return;
+            this.refresh_();
+            if (texture.needsUpdate !== undefined)
+                texture.needsUpdate = true;
+            clearInterval(intervalId);
         }, 100);
     }
     removeEventListeners_() {
@@ -7240,13 +7232,11 @@ class PluginController$1 {
         const image = new Image();
         image.src = URL.createObjectURL(file);
         image.id = file.name;
-        const loadHandler = () => {
-            image.removeEventListener('load', loadHandler);
+        image.addEventListener('load', () => {
             this.view.texture.image = image;
             this.view.texture.needsUpdate = true;
-            this.view.refresh();
-        };
-        image.addEventListener('load', loadHandler);
+            this.value.rawValue = this.view.texture.clone();
+        });
     }
 }
 

@@ -10,9 +10,9 @@ interface TextureValue {
 	needsUpdate?: boolean;
 	isTexture?: boolean;
 	texture?: TextureValue;
-  }
+	clone: Function
+}
   
-
 interface Config {
 	value: Value<TextureValue>;
 	viewProps: ViewProps;
@@ -43,12 +43,9 @@ export class PluginView implements View {
 
 		// Receive the bound value from the controller
 		this.value_ = config.value;
+
+		// Expose texture
 		this.texture = this.value_.rawValue;
-		
-		// Set default name for monitor if missing
-		if (this.value_.rawValue && !this.value_.rawValue.name) {
-			this.value_.rawValue.name = 'texture';
-		}
 
 		// Extensions
 		this.extensions_ = this.params_.extensions || '.jpg, .jpeg, .png, .webp, .avif';
@@ -93,6 +90,7 @@ export class PluginView implements View {
         
 		// Apply the initial value
 		this.refresh_();
+		
 		// Dispose
 		config.viewProps.handleDispose(() => {
 			this.removeEventListeners_();
@@ -100,20 +98,15 @@ export class PluginView implements View {
 			
 	}
 
-	public refresh(): void {
-		this.refresh_();
-	}
-
 	private refresh_(): void {
 		const texture = this.value_.rawValue;
 		
-		if (texture.image) {
-			// For HTMLImageElement
-			if (texture.image instanceof HTMLImageElement && texture.image.complete) {
-				this.image_.setAttribute('src', texture.image.src);
-				this.image_.style.opacity = '1';
-				this.label_.style.opacity = '0';
-			} 
+		if (texture.image && texture.image instanceof HTMLImageElement && texture.image.complete) {
+			this.image_.setAttribute('src', texture.image.src);
+			this.image_.style.opacity = '1';
+			this.label_.style.opacity = '0';
+		} else {
+			this.label_.style.opacity = '1';
 		}
 		
 		// Apply texture name to monitor
@@ -197,11 +190,10 @@ export class PluginView implements View {
 		
         if (!texture) return;
 
-		this.watchTextureImage(texture)
+		this.watchTextureImage_(texture)
     }
 
 	private valueChangedHandler_() {
-		console.log('value changed');
 		this.refresh_();
 	}
 
@@ -213,16 +205,12 @@ export class PluginView implements View {
         this.input.addEventListener('mouseleave', this.mouseleaveHandler_);
     }
 	
-	private watchTextureImage(texture: TextureValue): void {
+	private watchTextureImage_(texture: TextureValue): void {
 		const intervalId = setInterval(() => {
-			if (texture.image) {
-				this.refresh_();
-				if (texture.needsUpdate !== undefined) {
-					texture.needsUpdate = true;
-				}
-				
-				clearInterval(intervalId);
-			}
+			if (!texture.image) return;
+			this.refresh_();
+			if (texture.needsUpdate !== undefined) texture.needsUpdate = true;
+			clearInterval(intervalId);
 		}, 100);
 	}
 	

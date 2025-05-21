@@ -62,14 +62,11 @@ export class PluginController implements Controller<PluginView> {
 		image.src = URL.createObjectURL(file);
 		image.id = file.name;
 
-		const loadHandler = () => {
-			image.removeEventListener('load', loadHandler);
+		image.addEventListener('load', () => {
 			this.view.texture.image = image
 			this.view.texture.needsUpdate = true;
-			this.view.refresh();
-		};
-
-		image.addEventListener('load', loadHandler);
+			this.value.rawValue = this.view.texture.clone();
+		});
 	}
 
 }

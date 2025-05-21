@@ -53,6 +53,23 @@ pane.addBinding(PARAMS, 'video', {
 });
 ```
 
+### Three.js Texture
+
+```js
+const material = new THREE.MeshBasicMaterial();
+const texture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg')
+material.map = texture;
+
+pane.addBinding(material, 'map', {
+    label: 'Texture',
+    view: 'texture',
+    height: 100,
+    showMonitor: true
+  }).on('change', (ev) => { 
+    console.log('change', ev);
+});
+```
+
 ## Todo
 
 - Better styling
