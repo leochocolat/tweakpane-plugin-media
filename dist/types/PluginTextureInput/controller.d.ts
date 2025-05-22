@@ -1,16 +1,16 @@
 import { Controller, Value, ViewProps } from '@tweakpane/core';
-import { PluginImageInputParams } from './plugin.js';
+import { PluginTextureInputParams } from './plugin.js';
 import { PluginView } from './view.js';
 interface Config {
-    value: Value<HTMLImageElement>;
+    value: Value<any>;
     viewProps: ViewProps;
-    params: PluginImageInputParams;
+    params: PluginTextureInputParams;
 }
 export declare class PluginController implements Controller<PluginView> {
-    readonly value: Value<HTMLImageElement>;
+    readonly value: Value<any>;
     readonly view: PluginView;
     readonly viewProps: ViewProps;
-    readonly params: PluginImageInputParams;
+    readonly params: PluginTextureInputParams;
     constructor(doc: Document, config: Config);
     private bindAll_;
     private setupEventListeners_;

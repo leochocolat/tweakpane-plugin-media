@@ -1,10 +1,10 @@
 import { BaseInputParams, InputBindingPlugin } from '@tweakpane/core';
-export interface PluginImageInputParams extends BaseInputParams {
+export interface PluginTextureInputParams extends BaseInputParams {
     extensions?: string;
     objectFit?: string;
     height?: number;
     showMonitor?: boolean;
     label: string;
-    view: 'image';
+    view: 'texture';
 }
-export declare const PluginImageInput: InputBindingPlugin<HTMLImageElement, HTMLImageElement, PluginImageInputParams>;
+export declare const PluginTextureInput: InputBindingPlugin<any, any, PluginTextureInputParams>;
