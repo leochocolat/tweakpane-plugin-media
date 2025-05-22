@@ -1,6 +1,6 @@
 {
   "name": "tweakpane-plugin-media",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Plugin Media for Tweakpane",
   "main": "dist/tweakpane-plugin-media.js",
   "type": "module",
