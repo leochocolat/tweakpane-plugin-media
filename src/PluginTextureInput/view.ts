@@ -105,12 +105,13 @@ export class PluginView implements View {
 			this.image_.setAttribute('src', texture.image.src);
 			this.image_.style.opacity = '1';
 			this.label_.style.opacity = '0';
+
+			// Apply texture name to monitor
+			this.monitor_.innerHTML = texture.image.src;
 		} else {
 			this.label_.style.opacity = '1';
 		}
 		
-		// Apply texture name to monitor
-		this.monitor_.innerHTML = this.value_.rawValue.image?.id || '';
 
         // Display monitor
         if (this.value_.rawValue.id && this.params_.showMonitor) {
