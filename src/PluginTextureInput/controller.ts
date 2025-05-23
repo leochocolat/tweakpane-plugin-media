@@ -63,47 +63,27 @@ export class PluginController implements Controller<PluginView> {
 		image.id = file.name;
 		
 		image.addEventListener('load', () => {
-			// Get original texture dimensions
-			const originalImage = this.view.texture.image;
-			const targetWidth = (originalImage as HTMLImageElement | HTMLCanvasElement).width || 256;
-			const targetHeight = (originalImage as HTMLImageElement | HTMLCanvasElement).height || 256;
+			const TextureConstructor = this.view.texture.constructor as any;
+			const newTexture = new TextureConstructor(image);
 			
-			// Create canvas and resize
-			const canvas = document.createElement('canvas');
-			const ctx = canvas.getContext('2d')!;
+			const originalTexture = this.view.texture as any;
+			const newTextureAny = newTexture as any;
 			
-			canvas.width = targetWidth;
-			canvas.height = targetHeight;
+			for (const key in originalTexture) {
+				if (originalTexture.hasOwnProperty(key) && key !== 'image' && key !== 'source') {
+					try {
+						newTexture[key] = originalTexture[key];
+					} catch (error) {
+						console.warn(`Could not copy property: ${key}`, error);
+					}
+				}
+			}
 			
-			// Draw resized image
-			ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+			newTextureAny.needsUpdate = true;
+			this.value.rawValue = newTexture;
 			
-			// Convert canvas back to image
-			const resizedImage = new Image();
-			resizedImage.src = canvas.toDataURL();
-			resizedImage.id = file.name;
-			
-			resizedImage.addEventListener('load', () => {
-				const texture = this.view.texture.clone();
-				
-				texture.image = resizedImage;
-				texture.needsUpdate = true;
-				this.value.rawValue = texture;
-
-				// Clean up
-				this.cleanupCanvas(canvas);
-				URL.revokeObjectURL(objectURL);
-			});
+			URL.revokeObjectURL(objectURL);
 		});
-	}
-
-	private cleanupCanvas(canvas: HTMLCanvasElement): void {
-		const ctx = canvas.getContext('2d');
-		if (ctx) {
-			ctx.clearRect(0, 0, canvas.width, canvas.height);
-		}
-		canvas.width = 0;
-		canvas.height = 0;
 	}
 	
 }
