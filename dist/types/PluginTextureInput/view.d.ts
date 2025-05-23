@@ -1,13 +1,24 @@
 import { Value, View, ViewProps } from '@tweakpane/core';
-import { PluginImageInputParams } from './plugin.js';
+import { PluginTextureInputParams } from './plugin.js';
+interface TextureValue {
+    image?: HTMLElement | HTMLImageElement | HTMLCanvasElement;
+    name?: string;
+    id?: string;
+    src?: string;
+    needsUpdate?: boolean;
+    isTexture?: boolean;
+    texture?: TextureValue;
+    clone: Function;
+}
 interface Config {
-    value: Value<HTMLImageElement>;
+    value: Value<TextureValue>;
     viewProps: ViewProps;
-    params: PluginImageInputParams;
+    params: PluginTextureInputParams;
 }
 export declare class PluginView implements View {
     readonly element: HTMLElement;
     input: HTMLInputElement;
+    texture: TextureValue;
     private value_;
     private extensions_;
     private head_;
@@ -26,9 +37,11 @@ export declare class PluginView implements View {
     private createLabel_;
     private createImage_;
     private bindAll_;
-    private setupEventListeners_;
-    private removeEventListeners_;
+    private setupTextureEvents_;
     private valueChangedHandler_;
+    private setupEventListeners_;
+    private watchTextureImage_;
+    private removeEventListeners_;
     private dragenterHandler_;
     private dragleaveHandler_;
     private mouseenterHandler_;
