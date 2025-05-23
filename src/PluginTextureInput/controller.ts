@@ -55,18 +55,56 @@ export class PluginController implements Controller<PluginView> {
 
 	private inputHandler_(): void {
 		const file = this.view.input.files ? this.view.input.files[0] : null;
-
 		if (!file) return;
-
+	
 		const image = new Image();
-		image.src = URL.createObjectURL(file);
+		const objectURL = URL.createObjectURL(file);
+		image.src = objectURL;
 		image.id = file.name;
-
+		
 		image.addEventListener('load', () => {
-			this.view.texture.image = image
-			this.view.texture.needsUpdate = true;
-			this.value.rawValue = this.view.texture.clone();
+			// Get original texture dimensions
+			const originalImage = this.view.texture.image;
+			const targetWidth = (originalImage as HTMLImageElement | HTMLCanvasElement).width || 256;
+			const targetHeight = (originalImage as HTMLImageElement | HTMLCanvasElement).height || 256;
+			
+			// Create canvas and resize
+			const canvas = document.createElement('canvas');
+			const ctx = canvas.getContext('2d')!;
+			
+			canvas.width = targetWidth;
+			canvas.height = targetHeight;
+			
+			// Draw resized image
+			ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+			
+			// Convert canvas back to image
+			const resizedImage = new Image();
+			resizedImage.src = canvas.toDataURL();
+			resizedImage.id = file.name;
+			
+			resizedImage.addEventListener('load', () => {
+				const texture = this.view.texture.clone();
+				console.log(texture);
+				
+				texture.image = resizedImage;
+				texture.needsUpdate = true;
+				this.value.rawValue = texture;
+
+				// Clean up
+				this.cleanupCanvas(canvas);
+				URL.revokeObjectURL(objectURL);
+			});
 		});
 	}
 
+	private cleanupCanvas(canvas: HTMLCanvasElement): void {
+		const ctx = canvas.getContext('2d');
+		if (ctx) {
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+		}
+		canvas.width = 0;
+		canvas.height = 0;
+	}
+	
 }

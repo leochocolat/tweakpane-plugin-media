@@ -49,7 +49,7 @@ pane.addBinding(material, 'map', {
     height: 100,
     showMonitor: true
   }).on('change', (ev) => { 
-    console.log('change', ev);
+    console.log('change', ev.value);
 });
 
 const scene = new THREE.Scene();
