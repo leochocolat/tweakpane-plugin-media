@@ -1390,7 +1390,7 @@ class Semver {
     }
 }
 
-const VERSION = new Semver('2.0.3');
+const VERSION = new Semver('2.0.5');
 
 function createPlugin(plugin) {
     return Object.assign({ core: VERSION }, plugin);
@@ -4072,7 +4072,7 @@ function parseHexRgbColor(text) {
     return comps ? new IntColor(comps, 'rgb') : null;
 }
 function parseHexRgbaColorComponents(text) {
-    const mRgb = text.match(/^#?([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
+    const mRgb = text.match(/^#([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
     if (mRgb) {
         return [
             parseInt(mRgb[1] + mRgb[1], 16),
@@ -7229,13 +7229,43 @@ class PluginController$1 {
         if (!file)
             return;
         const image = new Image();
-        image.src = URL.createObjectURL(file);
+        const objectURL = URL.createObjectURL(file);
+        image.src = objectURL;
         image.id = file.name;
         image.addEventListener('load', () => {
-            this.view.texture.image = image;
-            this.view.texture.needsUpdate = true;
-            this.value.rawValue = this.view.texture.clone();
+            // Get original texture dimensions
+            const originalImage = this.view.texture.image;
+            const targetWidth = originalImage.width || 256;
+            const targetHeight = originalImage.height || 256;
+            // Create canvas and resize
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = targetWidth;
+            canvas.height = targetHeight;
+            // Draw resized image
+            ctx.drawImage(image, 0, 0, targetWidth, targetHeight);
+            // Convert canvas back to image
+            const resizedImage = new Image();
+            resizedImage.src = canvas.toDataURL();
+            resizedImage.id = file.name;
+            resizedImage.addEventListener('load', () => {
+                const texture = this.view.texture.clone();
+                texture.image = resizedImage;
+                texture.needsUpdate = true;
+                this.value.rawValue = texture;
+                // Clean up
+                this.cleanupCanvas(canvas);
+                URL.revokeObjectURL(objectURL);
+            });
         });
+    }
+    cleanupCanvas(canvas) {
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+        canvas.width = 0;
+        canvas.height = 0;
     }
 }
 

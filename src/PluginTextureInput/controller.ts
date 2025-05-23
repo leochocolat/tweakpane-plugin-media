@@ -85,7 +85,6 @@ export class PluginController implements Controller<PluginView> {
 			
 			resizedImage.addEventListener('load', () => {
 				const texture = this.view.texture.clone();
-				console.log(texture);
 				
 				texture.image = resizedImage;
 				texture.needsUpdate = true;
