@@ -1390,7 +1390,7 @@ class Semver {
     }
 }
 
-const VERSION = new Semver('2.0.5');
+const VERSION = new Semver('2.0.3');
 
 function createPlugin(plugin) {
     return Object.assign({ core: VERSION }, plugin);
@@ -4072,7 +4072,7 @@ function parseHexRgbColor(text) {
     return comps ? new IntColor(comps, 'rgb') : null;
 }
 function parseHexRgbaColorComponents(text) {
-    const mRgb = text.match(/^#([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
+    const mRgb = text.match(/^#?([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])([0-9A-Fa-f])$/);
     if (mRgb) {
         return [
             parseInt(mRgb[1] + mRgb[1], 16),
@@ -7249,7 +7249,6 @@ class PluginController$1 {
             }
             newTextureAny.needsUpdate = true;
             this.value.rawValue = newTexture;
-            URL.revokeObjectURL(objectURL);
         });
     }
 }

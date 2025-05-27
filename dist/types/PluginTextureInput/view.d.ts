@@ -7,8 +7,6 @@ interface TextureValue {
     src?: string;
     needsUpdate?: boolean;
     isTexture?: boolean;
-    texture?: TextureValue;
-    clone: Function;
 }
 interface Config {
     value: Value<TextureValue>;
