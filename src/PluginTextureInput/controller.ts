@@ -81,8 +81,6 @@ export class PluginController implements Controller<PluginView> {
 			
 			newTextureAny.needsUpdate = true;
 			this.value.rawValue = newTexture;
-			
-			URL.revokeObjectURL(objectURL);
 		});
 	}
 	
