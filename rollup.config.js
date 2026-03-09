@@ -72,12 +72,13 @@ export default async () => {
 	const css = await compileCss();
 	return {
 		input: 'src/index.ts',
-		external: ['tweakpane'],
+		external: ['tweakpane', 'three'],
 		output: {
 			file: `dist/${distName}${postfix}.js`,
 			format: 'esm',
 			globals: {
 				tweakpane: 'Tweakpane',
+				three: 'THREE',
 			},
 		},
 		plugins: getPlugins(css, production),

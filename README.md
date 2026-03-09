@@ -9,8 +9,13 @@ Plugin for image and video inputs for [Tweakpane](https://tweakpane.github.io/do
 ## Installation
 
 ```bash
-npm install tweakpane
-npm i tweakpane-plugin-media
+npm install tweakpane tweakpane-plugin-media
+```
+
+For Three.js texture support, also install:
+
+```bash
+npm install three
 ```
 
 ```js
